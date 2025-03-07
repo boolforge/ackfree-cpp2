@@ -15,7 +15,6 @@ type
 
 var
   chf: File;
-  strnum: function(b: Byte): string; // Corrected declaration
   ioresult: Integer;
   region: TRegion;
   xchunkloc, ychunkloc: Integer;
@@ -24,6 +23,11 @@ var
   topx, topy: Integer;
   pointmode: Integer;
   done2: Boolean;
+
+function strnum(b: Byte): string; // Corrected definition
+begin
+  // Implementation of strnum
+end;
 
 procedure putpixel(x, y: Integer; color: Byte);
 begin
@@ -88,4 +92,22 @@ begin
       case upcase_sync(readkey) of
         #27: begin done2 := true; pointmode := 1; end;
         #0: case readkey of
-          'H': begin if topy > 1 then dec(topy); pointmode :=  ▋
+          'H': begin if topy > 1 then dec(topy); pointmode := 1; end;
+          'K': begin if topx > 1 then dec(topx); pointmode := 1; end;
+          'P': begin if topy < 20 then inc(topy); pointmode := 1; end;
+          'M': begin if topx < 12 then inc(topx); pointmode := 1; end;
+          'G': begin topx := 1; topy := 1; pointmode := 1; end;
+        end;
+    end;
+    until pointmode = 1;
+    repeat
+    until done2;
+    close(chf);
+    clearscreen;
+    if region.rooms = 254 then
+    begin
+      cwmap_scrollbars;
+      previewcells(topx, topy);
+    end;
+  end;
+end;
