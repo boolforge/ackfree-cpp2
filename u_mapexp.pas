@@ -1,6 +1,15 @@
+unit u_mapexp;
+
+interface
+
+procedure exportmap(thisregion: Byte);
+
+implementation
+
 const
   ADVNAME = 'advname';
   MAPAFILE = 'mapafile';
+
 type
   TMap = array[1..20, 1..12] of Integer;
   TRegion = record
@@ -8,10 +17,11 @@ type
       wmap: TMap;
     end;
   end;
-  TMapRecord = packed record
+  TMapRecord = record
     o: Byte;
   end;
   TMapArray = array[1..16, 1..16] of TMapRecord;
+
 var
   chf: File;
   ioresult: Integer;
@@ -22,46 +32,47 @@ var
   topx, topy: Integer;
   pointmode: Integer;
   done2: Boolean;
+
 function strnum(b: Byte): string;
 begin
-  // Implementation of strnum
-  strnum := IntToStr(b); //Example of correct Implementation
+  strnum := IntToStr(b);
 end;
+
 procedure putpixel(x, y: Integer; color: Byte);
 begin
-  // Implementation of putpixel
-  //Example of correct Implementation
+  // Placeholder, add your implementation
 end;
+
 procedure say(x, y, color: Integer; msg: string);
 begin
-  // Implementation of say
-  //Example of correct Implementation
+  // Placeholder, add your implementation
 end;
+
 function upcase_sync(ch: Char): Char;
 begin
-  // Implementation of upcase_sync
-  upcase_sync := UpCase(ch); //Example of correct Implementation
+  upcase_sync := UpCase(ch);
 end;
+
 function readkey: Char;
 begin
-  // Implementation of readkey
-  readkey := #0; //Example of correct Implementation
+  readkey := #0;
 end;
+
 procedure clearscreen;
 begin
-  // Implementation of clearscreen
-  //Example of correct Implementation
+  // Placeholder, add your implementation
 end;
+
 procedure cwmap_scrollbars;
 begin
-  // Implementation of cwmap_scrollbars
-  //Example of correct Implementation
+  // Placeholder, add your implementation
 end;
+
 procedure previewcells(x, y: Integer);
 begin
-  // Implementation of previewcells
-  //Example of correct Implementation
+  // Placeholder, add your implementation
 end;
+
 procedure exportmap(thisregion: Byte);
 begin
   assign(chf, ADVNAME + MAPAFILE + strnum(thisregion));
@@ -75,13 +86,13 @@ begin
         begin
           {$I-}
           seek(chf, region.room.wmap[xchunkloc, ychunkloc] - 1);
-          read(chf, map); // Read the entire map
+          read(chf, map);
           {$I+}
           for pointx := 0 to 15 do
             for pointy := 0 to 15 do
               putpixel(pointx + (xchunkloc - topx) * 16,
                        pointy + (ychunkloc - topy) * 16,
-                       map[pointx + 1, pointy + 1].o); // Corrected access
+                       map[pointx + 1, pointy + 1].o);
         end;
       end;
     pointmode := 0;
@@ -102,10 +113,12 @@ begin
     until done2;
     close(chf);
     clearscreen;
-    if region.room.wmap[1,1] = 254 then //Corrected region.rooms to region.room and added a valid check.
+    if region.room.wmap[1,1] = 254 then
     begin
       cwmap_scrollbars;
       previewcells(topx, topy);
     end;
   end;
+end;
+
 end.
