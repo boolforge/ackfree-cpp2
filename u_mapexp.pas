@@ -1,5 +1,7 @@
 program u_mapexp;
 
+uses SysUtils;
+
 const
   ADVNAME = 'advname';
   MAPAFILE = 'mapafile';
@@ -18,7 +20,6 @@ type
 
 var
   chf: File;
-  ioresult: Integer;
   region: TRegion;
   xchunkloc, ychunkloc: Integer;
   map: TMapArray;
@@ -68,49 +69,79 @@ begin
 end;
 
 procedure exportmap(thisregion: Byte);
+var
+  error: Integer;
 begin
   assign(chf, ADVNAME + MAPAFILE + strnum(thisregion));
-  {$I-} reset(chf); {$I+}
-  if ioresult = 0 then
+  reset(chf);
+  error := FileRec(chf).Handle;
+  if error = -1 then
   begin
-    for xchunkloc := 1 to 20 do
-      for ychunkloc := 1 to 12 do
-      begin
-        if region.room.wmap[xchunkloc, ychunkloc] <> 0 then
-        begin
-          {$I-}
-          seek(chf, region.room.wmap[xchunkloc, ychunkloc] - 1);
-          read(chf, map);
-          {$I+}
-          for pointx := 0 to 15 do
-            for pointy := 0 to 15 do
-              putpixel(pointx + (xchunkloc - topx) * 16,
-                       pointy + (ychunkloc - topy) * 16,
-                       map[pointx + 1, pointy + 1].o);
-        end;
-      end;
-    pointmode := 0;
-    say(2, 191, 0, 'ESC:EXIT  ARROW KEYS:MOVE');
-    repeat
-      case upcase_sync(readkey) of
-        #27: begin done2 := true; pointmode := 1; end;
-        #0: case readkey of
-          'H': begin if topy > 1 then dec(topy); pointmode := 1; end;
-          'K': begin if topx > 1 then dec(topx); pointmode := 1; end;
-          'P': begin if topy < 20 then inc(topy); pointmode := 1; end;
-          'M': begin if topx < 12 then inc(topx); pointmode := 1; end;
-          'G': begin topx := 1; topy := 1; pointmode := 1; end;
-        end;
-      end;
-      until pointmode = 1;
-    repeat
-    until done2;
-    close(chf);
-    clearscreen;
-    if region.room.wmap[1,1] = 254 then
-    begin
-      cwmap_scrollbars;
-      previewcells(topx, topy);
-    end;
+    // error handling, e.g., writeln('Error opening file');
+    exit;
   end;
+  for xchunkloc := 1 to 20 do
+    for ychunkloc := 1 to 12 do
+    begin
+      if region.room.wmap[xchunkloc, ychunkloc] <> 0 then
+      begin
+        seek(chf, region.room.wmap[xchunkloc, ychunkloc] - 1);
+        read(chf, map);
+        for pointx := 0 to 15 do
+          for pointy := 0 to 15 do
+            putpixel(pointx + (xchunkloc - topx) * 16, pointy + (ychunkloc - topy) * 16, map[pointx + 1, pointy + 1].o);
+      end;
+    end;
+  pointmode := 0;
+  say(2, 191, 0, 'ESC:EXIT ARROW KEYS:MOVE');
+  repeat
+    case upcase_sync(readkey) of
+      #27:
+        begin
+          done2 := true;
+          pointmode := 1;
+        end;
+      #0:
+        case readkey of
+          'H':
+            begin
+              if topy > 1 then dec(topy);
+              pointmode := 1;
+            end;
+          'K':
+            begin
+              if topx > 1 then dec(topx);
+              pointmode := 1;
+            end;
+          'P':
+            begin
+              if topy < 20 then inc(topy);
+              pointmode := 1;
+            end;
+          'M':
+            begin
+              if topx < 12 then inc(topx);
+              pointmode := 1;
+            end;
+          'G':
+            begin
+              topx := 1;
+              topy := 1;
+              pointmode := 1;
+            end;
+        end;
+    end;
+  until pointmode = 1;
+  repeat until done2;
+  close(chf);
+  clearscreen;
+  if region.room.wmap[1,1] = 254 then
+  begin
+    cwmap_scrollbars;
+    previewcells(topx, topy);
+  end;
+end;
+
+begin
+  // Add any necessary initialization code here
 end.
