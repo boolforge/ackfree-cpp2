@@ -1,10 +1,4 @@
-unit u_mapexp;
-
-interface
-
-procedure exportmap(thisregion: Byte);
-
-implementation
+program u_mapexp;
 
 const
   ADVNAME = 'advname';
@@ -119,6 +113,4 @@ begin
       previewcells(topx, topy);
     end;
   end;
-end;
-
 end.
