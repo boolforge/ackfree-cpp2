@@ -8,9 +8,10 @@ type
       wmap: TMap;
     end;
   end;
-  TMapArray = array[1..16, 1..16] of record
+  TMapRecord = record
     o: Byte;
   end;
+  TMapArray = array[1..16, 1..16] of TMapRecord;
 var
   chf: File;
   ioresult: Integer;
