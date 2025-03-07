@@ -8,10 +8,9 @@ type
       wmap: TMap;
     end;
   end;
-  TMapRecord = record
+  TMapRecord = packed record
     o: Byte;
   end;
-  TMapArray; // Forward declaration
   TMapArray = array[1..16, 1..16] of TMapRecord;
 var
   chf: File;
