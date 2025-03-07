@@ -15,7 +15,7 @@ type
 
 var
   chf: File;
-  strnum: function(byte): string;
+  strnum: function(b: Byte): string; // Corrected declaration
   ioresult: Integer;
   region: TRegion;
   xchunkloc, ychunkloc: Integer;
