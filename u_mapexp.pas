@@ -11,6 +11,7 @@ type
   TMapRecord = record
     o: Byte;
   end;
+  TMapArray; // Forward declaration
   TMapArray = array[1..16, 1..16] of TMapRecord;
 var
   chf: File;
